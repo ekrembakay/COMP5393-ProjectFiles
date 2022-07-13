@@ -1,8 +1,10 @@
-from transformers import BertTokenizer, BertForSequenceClassification, AdamW, get_linear_schedule_with_warmup
+from transformers import BertTokenizer, BertForSequenceClassification
 import torch
-from torch.utils.data import TensorDataset
+import os
+
 
 label_dict = {'Band-6': 0, 'Band-7': 1, 'Band-8': 2}
+
 
 def get_device():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -26,9 +28,29 @@ def tokenize(text):
         add_special_tokens=True,
         return_attention_mask=True,
         padding='max_length',
-        max_length = 318,
+        max_length=318,
         truncation=True,
         return_tensors='pt'
     )
 
     return encoded_data
+
+
+def run_evaluation(inputs):
+
+    # model_file = os.path.join(os.getcwd(), "predictor/data_files/model.model")
+    model_file = "/Users/ekrembakay/Desktop/COMP5393-Capstone-Project/ProjectFiles/website/predictor/data_files/model.model"
+
+
+    model = get_model()
+    # model.to(get_device())
+    model.load_state_dict(torch.load(model_file, map_location=torch.device('cpu')))
+
+    model.eval()
+
+    with torch.no_grad():
+        logits = model(**inputs).logits
+
+    predicted = logits.argmax().item()
+
+    return predicted
