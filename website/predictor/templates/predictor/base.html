@@ -1,22 +1,62 @@
-{% if user.is_authenticated %}
+{% load static %}
 
-Logged in As: {{ user.username }}
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<form action="{% url 'logoutuser' %}" method="POST">
-    {% csrf_token %}
-    <button type="submit">Logout</button>
-</form>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static '/dist/css/signin.css' %}">
+    <title>IELTS Predictor</title>
+</head>
 
-{% else %}
+<main>
+    <div class="container">
+        <div class="fixed-top">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light rounded" aria-label="Eleventh navbar example">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">IELTS Predictor</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample09" aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
 
-<a href="{% url 'signupuser' %}">Signup</a>
-<a href="{% url 'loginuser' %}">Login</a>
+                    <div class="collapse navbar-collapse" id="navbarsExample09">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            {% block header %}
 
-{% endif %}
+                            {% endblock %}
 
-<br>
-<br>
+                        </ul>
+                        <span class="navbar-text">
+                            {% if user.is_authenticated %}
 
-{% block content %}
+                            Logged in As: {{ user.username }}
 
-{% endblock %}
+                            <form action="{% url 'logoutuser' %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit">Logout</button>
+                            </form>
+
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div>
+                    {% block content %}
+
+                    {% endblock %}
+
+        </div>
+    </div>
+</main>
+
+
+<script src="{% static 'dist/js/bootstrap.bundle.min.js}"></script>
+
+</body>
+</html>
+

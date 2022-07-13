@@ -1,14 +1,49 @@
 {% extends 'predictor/base.html' %}
+{% load static %}
 
-{% block content %}
-
-<h1>Login</h1>
-<h1>{{ error }}</h1>
-
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-</form>
-
+{% block header %}
+    <li class="nav-item">
+        <a class="nav-link"  href="{% url 'home' %}">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="{% url 'loginuser' %}">Login</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'signupuser' %}">Sign up</a>
+    </li>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="dropdown09" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
+        <ul class="dropdown-menu" aria-labelledby="dropdown09">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+        </ul>
+    </li>
 {% endblock %}
+
+
+    {% block content %}
+<body  class="justify-content-center">
+    <div class="container">
+        <div class="d-flex justify-content-center">
+                <div class="card text-center" style="width: 30rem;">
+                    <div class="card-header">
+                        <h1>Login</h1>
+                        <h1>{{ error }}</h1>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" class="px-4 py-3">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-primary">Sign in</button>
+                        </form>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <a class="dropdown-item" href="{% url 'signupuser' %}">New around here? Sign up</a>
+                    </div>
+                </div>
+        </div>
+    </div>
+    {% endblock %}
+
+
