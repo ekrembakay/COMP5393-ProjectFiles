@@ -4,6 +4,10 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import login, logout, authenticate
+from .form import AnswerForm
+import os
+
+from .utils.ml_model import *
 
 
 def home(request):
@@ -61,7 +65,35 @@ def logoutuser(request):
 
 
 def predictor(request):
-    return render(request, 'predictor/predictor.html')
+    if request.method == 'GET':
+        form = AnswerForm()
+        return render(request, 'predictor/predictor.html', {'form': form})
+    else:
+        # create a form instance and populate it with data from the request:
+        form = AnswerForm(request.POST)
 
+        if form.is_valid():
+            content = form.cleaned_data.get('answer')
+            model_file = os.path.join(os.getcwd(), "predictor/data_files/model.model")
+
+            model = get_model()
+            model.to(get_device())
+            model.load_state_dict(torch.load(model_file, map_location=torch.device('cpu')))
+
+            model.eval()
+
+            inputs = tokenize(content)
+
+            with torch.no_grad():
+                logits = model(**inputs).logits
+
+            predicted = logits.argmax().item()
+
+           # return redirect('result', {'result': content})
+            return render(request, 'helper/result.html', {'result': predicted})
+
+
+def result(request):
+    return render(request, 'helper/result.html')
 
 # Create your views here.

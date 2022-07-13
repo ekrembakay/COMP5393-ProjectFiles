@@ -29,4 +29,5 @@ urlpatterns = [
     # Todos
     path('', views.home, name='home'),
     path('predictor/', views.predictor, name='predictor'),
+    path('result/', views.result, name='result'),
 ]
