@@ -1,1 +1,55 @@
-{{ result }}
+{% extends 'predictor/base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block header %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'home' %}">Home</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page"  href="{% url 'predictor' %}">Predictor</a>
+</li>
+{% endblock %}
+
+{% block content %}
+<body class="justify-content-center">
+<div class="container">
+    <div class="row align-items-center">
+        {% if score == 0 %}
+        <div class="card border-danger mb-3" style="max-width: 100rem;">
+            <div class="card-header bg-transparent border-danger text-center text-danger"><h1>Your Grade: {{ band }}</h1></div>
+            <div class="card-body text-danger">
+                <h5 class="card-title">Your submission</h5>
+                <p class="card-text">{{ submission }}</p>
+            </div>
+            <div class="card-footer bg-transparent border-danger text-center">
+                <a class="btn btn-primary" href="{% url 'predictor' %}" role="button">Try Again</a>
+            </div>
+        </div>
+        {% elif score == 1 %}
+        <div class="card border-warning mb-3" style="max-width: 100rem;">
+            <div class="card-header bg-transparent border-warning text-center text-warning"><h1>Your Grade: {{ band }}</h1></div>
+            <div class="card-body text-warning">
+                <h5 class="card-title">Your submission</h5>
+                <p class="card-text">{{ submission }}</p>
+            </div>
+            <div class="card-footer bg-transparent border-warning text-center">
+                <a class="btn btn-primary" href="{% url 'predictor' %}" role="button">Try Again</a>
+            </div>
+        </div>
+        {% else %}
+        <div class="card border-success mb-3" style="max-width: 100rem;">
+            <div class="card-header bg-transparent border-success text-center text-success"><h1>Your Grade: {{ band }}</h1></div>
+            <div class="card-body text-success">
+                <h5 class="card-title">Your submission</h5>
+                <p class="card-text">{{ submission }}</p>
+            </div>
+            <div class="card-footer bg-transparent border-success text-center">
+                <a class="btn btn-primary" href="{% url 'predictor' %}" role="button">Try Again</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

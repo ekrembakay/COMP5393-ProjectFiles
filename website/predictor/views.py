@@ -1,5 +1,5 @@
 import re
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
@@ -8,10 +8,15 @@ from .form import AnswerForm
 import os
 from .models import Essay
 from .utils.ml_model import *
+from .utils.process_text import *
 
 
 def home(request):
-    return render(request, 'predictor/home.html')
+    essay_list = Essay.objects.filter(user_id=request.user.id).order_by('id').reverse()[:10]
+    context = {
+        'essays': essay_list,
+    }
+    return render(request, 'predictor/home.html', context)
 
 
 def signupuser(request):
@@ -79,15 +84,27 @@ def predictor(request):
 
             prediction = run_evaluation(inputs)
 
+            if request.user != None:
+                current_user = request.user.id
            # return redirect('result', {'result': content})
             essay = Essay.objects.create(
                 content=content,
-                score=prediction
+                score=prediction,
+                user_id=current_user,
             )
-            return render(request, 'helper/result.html', {'result': prediction})
+            return redirect('result', essay_id=essay.id)
 
 
-def result(request):
-    return render(request, 'helper/result.html')
+def result(request, essay_id):
+    essay = Essay.objects.get(id=essay_id)
+    essay_text = essay_content(essay.content)
+    essay_band = convert_score(essay.score)
+    context = {
+        "submission": essay_text,
+        "band": essay_band,
+        "score": essay.score
+        #"score": 1
+    }
+    return render(request, 'helper/result.html', context)
 
 # Create your views here.
