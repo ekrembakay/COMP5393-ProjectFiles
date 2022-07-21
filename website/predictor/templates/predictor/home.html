@@ -23,18 +23,27 @@
 {% endblock %}
 
 {% block content %}
+<div class="container-fluid align-content-between">
 
-<body class="justify-content-center">
-<div class="container">
-    <div class="row align-items-center">
-        <div class="card text-center">
+
+     <div class="card text-center">
           <div class="card-header">
-            Featured
+            Welcome to the IELTS Predictor
           </div>
           <div class="card-body">
-            <h5 class="card-title">Special title treatment</h5>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+            <h5 class="card-title">What can you do with IELTS Predictor?</h5>
+            <p class="card-text">It is now possible to learn your band range for IELTS writing task 2 with the power of Machine Learning and AI.</p>
+              <p><img src="{% static 'ielts.jpg'%}"></p>
+              {% if user.is_authenticated %}
+                <p>Start predicting your score now. Just go to the predictor page and enter your essay to the text box.
+                    The system will calculate your band range and present to you. Good Luck!
+                </p>
+              <a href="{% url 'predictor' %}" class="btn btn-primary">Start Now</a>
+              {% else %}
+                <p>Login Now and Learn your IELTS Band</p>
+                <a href="{% url 'loginuser' %}" class="btn btn-primary">Login Here</a>
+              {% endif %}
+
           </div>
           <div class="card-footer text-muted">
               {% if user.is_authenticated %}
@@ -87,10 +96,12 @@
                 {% else %}
                     <p>No polls are available.</p>
                 {% endif %}
+              {% else %}
+              Login Now
               {% endif %}
           </div>
-        </div>
-    </div>
+     </div>
 </div>
+
 
 {% endblock %}
