@@ -60,7 +60,7 @@ def loginuser(request):
                           )
         else:
             login(request, user)
-            return redirect('predictor')
+            return redirect('home')
 
 
 def logoutuser(request):
