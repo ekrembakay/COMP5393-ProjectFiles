@@ -31,10 +31,10 @@ def signupuser(request):
                 return redirect('predictor')
             except IntegrityError:
                 return render(request, 'predictor/signupuser.html',
-                              {
-                                'form': UserCreationForm(),
-                                'error': "This username has already been taken. please choose another username"
-                               }
+                                {
+                                    'form': UserCreationForm(),
+                                    'error': "This username has already been taken. please choose another username"
+                                }
                               )
         else:
             # password does not match

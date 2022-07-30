@@ -39,7 +39,7 @@ def tokenize(text):
 def run_evaluation(inputs):
 
     # model_file = os.path.join(os.getcwd(), "predictor/data_files/model.model")
-    model_file = "/Users/ekrembakay/Desktop/COMP5393-Capstone-Project/ProjectFiles/website/predictor/data_files/model.model"
+    model_file = os.path.join(os.getcwd(),"predictor/data_files/model.model")
 
 
     model = get_model()
