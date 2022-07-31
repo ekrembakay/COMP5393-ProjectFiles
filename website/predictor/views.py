@@ -7,9 +7,40 @@ from django.contrib.auth import login, logout, authenticate
 from .form import AnswerForm
 import os
 from .models import Essay
-from .utils.ml_model import *
-from .utils.process_text import *
+from django.conf import settings
+from transformers import BertTokenizer, BertForSequenceClassification
+import torch
 
+path_to_model = os.path.join(settings.BASE_DIR, 'static/model/')
+model_file = os.path.join(path_to_model, 'model.model')
+loaded_model = torch.load(model_file, map_location=torch.device('cpu'))
+
+def get_device():
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    return device
+
+def get_model():
+
+    model = BertForSequenceClassification.from_pretrained("bert-base-uncased",
+                                                          num_labels=3,
+                                                          output_attentions=False,
+                                                          output_hidden_states=False)
+
+    return model
+
+def tokenize(text):
+    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+    encoded_data = tokenizer.batch_encode_plus(
+        text,
+        add_special_tokens=True,
+        return_attention_mask=True,
+        padding='max_length',
+        max_length=318,
+        truncation=True,
+        return_tensors='pt'
+    )
+
+    return encoded_data
 
 def home(request):
     essay_list = Essay.objects.filter(user_id=request.user.id).order_by('id').reverse()[:10]
@@ -80,17 +111,38 @@ def predictor(request):
         if form.is_valid():
             content = [form.cleaned_data.get('answer')]
 
-            prediction = run_evaluation(content)
+            try:
+                data = tokenize(content)
 
-            if request.user != None:
-                current_user = request.user.id
-           # return redirect('result', {'result': content})
-            essay = Essay.objects.create(
-                content=content,
-                score=prediction,
-                user_id=current_user,
-            )
-            return redirect('result', essay_id=essay.id)
+                model = get_model()
+                # model.to(get_device())
+                model.load_state_dict(loaded_model)
+
+                model.eval()
+
+                with torch.no_grad():
+                    logits = model(**data).logits
+
+                prediction = logits.argmax().item()
+
+                if request.user != None:
+                    current_user = request.user.id
+                # return redirect('result', {'result': content})
+                essay = Essay.objects.create(
+                    content=content,
+                    score=prediction,
+                    user_id=current_user,
+                )
+                return redirect('result', essay_id=essay.id)
+
+            except ValueError as ve:
+                model_prediction = {
+                    'error_code' : '-1',
+                    "info": str(ve)
+                }
+                return render(request, 'predictor/predictor.html', model_prediction)
+
+
 
 
 def result(request, essay_id):

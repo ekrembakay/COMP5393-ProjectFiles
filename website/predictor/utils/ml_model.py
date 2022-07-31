@@ -6,9 +6,7 @@ import os
 label_dict = {'Band-6': 0, 'Band-7': 1, 'Band-8': 2}
 
 
-def get_device():
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    return device
+
 
 
 def get_model():
