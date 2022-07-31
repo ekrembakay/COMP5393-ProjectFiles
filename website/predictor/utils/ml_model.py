@@ -38,6 +38,8 @@ def tokenize(text):
 
 def run_evaluation(inputs):
 
+    data = tokenize(inputs)
+
     # model_file = os.path.join(os.getcwd(), "predictor/data_files/model.model")
     model_file = os.path.join(os.getcwd(),"predictor/data_files/model.model")
 
@@ -49,7 +51,7 @@ def run_evaluation(inputs):
     model.eval()
 
     with torch.no_grad():
-        logits = model(**inputs).logits
+        logits = model(**data).logits
 
     predicted = logits.argmax().item()
 

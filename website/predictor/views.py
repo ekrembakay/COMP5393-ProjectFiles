@@ -80,9 +80,7 @@ def predictor(request):
         if form.is_valid():
             content = [form.cleaned_data.get('answer')]
 
-            inputs = tokenize(content)
-
-            prediction = run_evaluation(inputs)
+            prediction = run_evaluation(content)
 
             if request.user != None:
                 current_user = request.user.id
