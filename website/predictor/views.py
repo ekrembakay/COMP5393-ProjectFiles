@@ -10,6 +10,7 @@ from .models import Essay
 from django.conf import settings
 from transformers import BertTokenizer, BertForSequenceClassification
 import torch
+from .utils.process_text import essay_content, convert_score
 
 path_to_model = os.path.join(settings.BASE_DIR, 'static/model/')
 model_file = os.path.join(path_to_model, 'model.model')
